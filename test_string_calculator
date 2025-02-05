@@ -80,3 +80,20 @@ def test_custom_delimiter(calc):
 """Test multiple custom delimiters are handled correctly."""
 def test_multiple_delimiters(calc):
     assert calc.add("//[*][%]\n1*2%3") == 6
+
+"""Test mixed usage of custom and default delimiters."""
+def test_mix_delimiters(calc):
+    assert calc.add("//[;]\n1;2,3\n4") == 10
+    
+"""Test large numbers (>1000) are ignored, small numbers are summed."""
+def test_large_numbers_and_small_numbers(calc):
+    assert calc.add("1000,1001,2") == 1002
+
+"""Test only large numbers greater than 1000 return 0."""
+def test_only_large_numbers(calc):
+    assert calc.add("1001,2000,3000") == 0
+
+"""Test that multiple negative numbers raise a ValueError."""
+def test_more_than_one_negative_numbers(calc):
+    with pytest.raises(ValueError, match="Negatives not allowed"):
+        calc.add("-1,-2,3")
