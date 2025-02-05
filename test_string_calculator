@@ -61,3 +61,7 @@ def test_input_with_trailing_comma(calc):
 """Test input with a leading comma is handled correctly."""
 def test_input_with_comma_at_start(calc):
     assert calc.add(",1,2") == 3
+
+"""Test input with spaces around numbers and delimiters is handled correctly."""
+def test_input_with_spaces(calc):
+    assert calc.add(" 1 , 2 , 3 ") == 6
