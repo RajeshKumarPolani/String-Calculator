@@ -1,3 +1,35 @@
+import pytest
+import res
+
+class StringCalculator:
+    def add(self, numbers):
+        if not numbers:
+            return 0
+
+        delimiters = [',', '\n']
+        if numbers.startswith('//'):
+            parts = numbers.split('\n', 1)
+            delimiter_section = parts[0][2:]
+            numbers = parts[1]
+
+            if delimiter_section.startswith('[') and delimiter_section.endswith(']'):
+                custom_delimiters = re.findall(r'\[(.*?)\]', delimiter_section)
+                delimiters.extend(custom_delimiters)
+            else:
+                delimiters.append(delimiter_section)
+
+        pattern = '|'.join(map(re.escape, delimiters))
+        number_list = re.split(pattern, numbers)
+        total = 0
+        for num in number_list:
+            if num:
+                n = int(num)
+                if n < 0:
+                    raise ValueError(f"Negatives not allowed: {n}")
+                if n <= 1000:
+                    total += n
+        return total
+
 @pytest.fixture
 def calc():
     return StringCalculator()
