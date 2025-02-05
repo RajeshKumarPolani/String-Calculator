@@ -1,5 +1,5 @@
 import pytest
-import res
+import re
 
 class StringCalculator:
     def add(self, numbers):
@@ -7,11 +7,13 @@ class StringCalculator:
             return 0
 
         delimiters = [',', '\n']
+
         if numbers.startswith('//'):
             parts = numbers.split('\n', 1)
             delimiter_section = parts[0][2:]
             numbers = parts[1]
 
+            # Handling multiple custom delimiters
             if delimiter_section.startswith('[') and delimiter_section.endswith(']'):
                 custom_delimiters = re.findall(r'\[(.*?)\]', delimiter_section)
                 delimiters.extend(custom_delimiters)
@@ -20,14 +22,14 @@ class StringCalculator:
 
         pattern = '|'.join(map(re.escape, delimiters))
         number_list = re.split(pattern, numbers)
+
         total = 0
         for num in number_list:
             if num:
                 n = int(num)
                 if n < 0:
                     raise ValueError(f"Negatives not allowed: {n}")
-                if n <= 1000:
-                    total += n
+                total += n  # Removed condition to ignore numbers > 1000
         return total
 
 @pytest.fixture
@@ -84,14 +86,6 @@ def test_multiple_delimiters(calc):
 """Test mixed usage of custom and default delimiters."""
 def test_mix_delimiters(calc):
     assert calc.add("//[;]\n1;2,3\n4") == 10
-    
-"""Test large numbers (>1000) are ignored, small numbers are summed."""
-def test_large_numbers_and_small_numbers(calc):
-    assert calc.add("1000,1001,2") == 1002
-
-"""Test only large numbers greater than 1000 return 0."""
-def test_only_large_numbers(calc):
-    assert calc.add("1001,2000,3000") == 0
 
 """Test that multiple negative numbers raise a ValueError."""
 def test_more_than_one_negative_numbers(calc):
@@ -101,3 +95,9 @@ def test_more_than_one_negative_numbers(calc):
 """Test adding two large numbers."""
 def test_two_large_numbers(calc):
     assert calc.add("500,400") == 900
+
+def test_large_numbers_with_small_numbers(calc):
+    assert calc.add("1000,1001,2") == 2003
+
+def test_large_numbers(calc):
+    assert calc.add("1001,2000,3000") == 6001
