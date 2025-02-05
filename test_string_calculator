@@ -65,3 +65,7 @@ def test_input_with_comma_at_start(calc):
 """Test input with spaces around numbers and delimiters is handled correctly."""
 def test_input_with_spaces(calc):
     assert calc.add(" 1 , 2 , 3 ") == 6
+
+"""Test custom delimiters with special characters are handled correctly."""
+def test_custom_delimiter_with_special_character(calc):
+    assert calc.add("//[.]\n1.2.3") == 6
