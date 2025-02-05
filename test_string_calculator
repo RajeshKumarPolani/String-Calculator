@@ -1,0 +1,15 @@
+@pytest.fixture
+def calc():
+    return StringCalculator()
+
+"""Test that an empty string returns 0."""
+def test_empty_string(calc):
+    assert calc.add("") == 0
+
+"""Test that a single number returns its own value."""
+def test_single_number(calc):
+    assert calc.add("5") == 5
+
+"""Test adding two numbers separated by a comma."""
+def test_two_numbers_with_comma(calc):
+    assert calc.add("1,2") == 3
