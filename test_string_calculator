@@ -97,3 +97,7 @@ def test_only_large_numbers(calc):
 def test_more_than_one_negative_numbers(calc):
     with pytest.raises(ValueError, match="Negatives not allowed"):
         calc.add("-1,-2,3")
+
+"""Test adding two large numbers."""
+def test_two_large_numbers(calc):
+    assert calc.add("500,400") == 900
