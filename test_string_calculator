@@ -1,8 +1,17 @@
-import pytest
-import re
-
 class StringCalculator:
     def add(self, numbers):
+        return self._calculate(numbers, operation="add")
+
+    def subtract(self, numbers):
+        return self._calculate(numbers, operation="subtract")
+
+    def multiply(self, numbers):
+        return self._calculate(numbers, operation="multiply")
+
+    def divide(self, numbers):
+        return self._calculate(numbers, operation="divide")
+
+    def _calculate(self, numbers, operation):
         if not numbers:
             return 0
 
@@ -21,16 +30,24 @@ class StringCalculator:
                 delimiters.append(delimiter_section)
 
         pattern = '|'.join(map(re.escape, delimiters))
-        number_list = re.split(pattern, numbers)
+        number_list = [int(num) for num in re.split(pattern, numbers) if num]
 
-        total = 0
-        for num in number_list:
-            if num:
-                n = int(num)
-                if n < 0:
-                    raise ValueError(f"Negatives not allowed: {n}")
-                total += n  # Removed condition to ignore numbers > 1000
-        return total
+        if operation == "add":
+            return sum(number_list)
+        elif operation == "subtract":
+            return number_list[0] - sum(number_list[1:])
+        elif operation == "multiply":
+            result = 1
+            for num in number_list:
+                result *= num
+            return result
+        elif operation == "divide":
+            result = number_list[0]
+            for num in number_list[1:]:
+                if num == 0:
+                    raise ValueError("Division by zero is not allowed")
+                result /= num
+            return result
 
 @pytest.fixture
 def calc():
